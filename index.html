@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en-US" data-theme="dark">
+<head>
+<title>EarthBull's Homepage</title>
+<meta name="description" content="EarthBull's Homepage with web apps.">
+<meta charset="utf-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ <meta http-equiv="X-UA-Compatible" content="ie=edge">
+ <meta name="robots" content="index,follow" />
+
+<link rel="shortcut icon" type="image/jpg" href="favicon-32x32.png"/>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="js/seedrandom.js"></script>
+<script src="js/menu.js"></script>
+<script src="js/thcalc.js"></script>
+<script src="js/ecosia.js"></script>
+<script src="js/presearch.js"></script>
+<script src="js/searchscene.js"></script>
+<script src="https://raw.githubusercontent.com/eligrey/FileSaver.js/master/dist/FileSaver.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<!-- <link rel="stylesheet" href="css/pico.css"> -->
+<link rel="stylesheet" href="css/custom.css">
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head><!-- https://f4.bcbits.com/img/0025573370_130.jpg -->
+
+<style>
+body {
+        opacity: 0.95;
+        background-color: black;
+        background-position: auto;
+        background-image:url(img/background/mybg01.jpg);
+		width:100%;
+}
+.container {
+        opacity: 0.85;
+        background-color: black;
+        background-position: auto;
+		width:100%;
+ }
+.jumbotron {
+    background: rgba(255, 165, 0, 0.73);
+    padding: 20px;
+    color: #fff;
+    text-align: center;
+    background-color: black;
+    background-position: auto;
+    opacity: 0.80;
+	width:100%;
+}
+
+</style>
+<div class="jumbotron text-center" style="color:#FFFFFF;background-color:#000000;margin-bottom:0;width:100%;">
+  <h1>EarthBull's Web Apps n Galore</h1>
+  <p>It's free real estate.</p> 
+</div>
+
+<!-- <nav class="navbar navbar-expand-sm bg-dark navbar-dark"> -->
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark flex-column">
+  <a class="navbar-brand" href="#">[MENU]</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="collapsibleNavbar">
+  <ul class="nav navbar-nav ">
+  <li class="nav-item"><!-- StopIt2();CloseMe2();CloseIdleBot(); -->
+	<a class="nav-link" style="color:yellow;" href="#" onclick="StopIt();StopIt2();StopIt3();CloseMe();CloseMe2();CloseMe3();CloseIdleBot();menu(0);">➡Ecosia Idle Bot</a>
+  </li>
+  <li class="nav-item"> <!-- StopIt();CloseMe();CloseIdleBot(); -->
+    <a class="nav-link" style="color:yellow;" href="#" onclick="StopIt();StopIt2();StopIt3();CloseMe();CloseMe2();CloseMe3();menu(5);">➡Presearch Idle Bot</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" style="color:yellow;" href="#" onclick="StopIt();StopIt2();StopIt3();CloseMe();CloseMe2();CloseMe3();menu(7);">➡SearchScene Idle Bot</a>
+    </li>
+  <li class="nav-item">
+	<a class="nav-link" style="color:yellow;" href="#" id="yeet" onclick="menu(1);">➡Random Video</a>
+   </li>
+      <li class="nav-item">
+        <a class="nav-link" style="color:yellow;" href="#" onclick="menu(4);">➡Select a playlist</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" style="color:yellow;" href="#" onclick="menu(8);">➡MAC Address Generator</a>
+      </li>
+	  <li class="nav-item">
+        <a class="nav-link" style="color:yellow;" href="#" onclick="menu(6);">➡Audio Player</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" style="color:yellow;" href="#" onclick="menu(2);">➡THC Calculator</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" style="color:yellow;" href="#" onclick="menu(3);">➡Visualizer Mode</a>
+      </li>
+	  <li class="nav-item">
+	    <a class="nav-link" style="color:yellow;" href="#" onclick="GenDailyBible();">➡Daily Bible Verse</a>
+		</li>
+      <li class="nav-item">
+        <a class="nav-link" style="color:yellow;" href="#" onclick="updateLOG(changeLOG);">➡View Changelog</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container" style="color:#FFFFFF;background-color:#000000;margin-top:30px;align-items:center;width:100%;">
+  <!--
+    <div class="col-sm-4">
+      <p></p>
+      <ul class="nav nav-pills flex-column">
+        <li class="nav-item">
+          <a class="nav-link active" href="#">Active</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Link</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Link</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link disabled" href="#">Disabled</a>
+        </li>
+      </ul>
+      <hr class="d-sm-none">
+    </div> -->
+    <div class="container-fluid bg-3 text-center" style="width:100%;">
+    <!-- <div class="box7" style="width:100%;height:720px;">
+      <script src='https://html5-chat.com/script/37822/6152c3c8c5379'></script>
+    </div> -->
+    <div class="box6" style="width:100%;"></div>
+    <div class="box5" style="width:100%;"></div>
+    <div class="box4" style="width:100%;"></div>
+    <div class="box" style="width:100%;"></div>
+    <div class="box2" style="width:100%;"></div>
+    <div class="box3" style="width:100%;"></div>
+    <div class='log' style="width:100%;"></div>
+ </div>
+  </div>
+
+</div>
+<script>
+const myVid = localStorage.getItem('MyPlaylist');
+$("document").ready(function() {
+    //if (isNaN(myVid)) {
+      localStorage.setItem('MyPlaylist', "0");
+    //}
+    menu(1);
+   // $("#yeet").trigger('click');
+});
+</script>
+<script type="text/javascript">
+window.onload = function() {
+$.fn.preload = function() {
+    this.each(function(){
+        $('<img/>')[0].src = this;
+    });
+}
+$(['img/bg1.gif','img/bg2.gif','img/bg3.gif','img/bg4.gif','img/bg5.gif','img/bg6.gif','img/bg7.gif',
+'img/bg8.gif','img/bg9.gif','img/bg10.gif','img/bg11.gif','img/bg12.gif','img/bg13.gif','img/bg14.gif',
+'img/bg15.gif','img/bg16.gif','img/bg17.gif','img/bg18.gif','img/bg19.gif','img/bg20.gif']).preload();
+};
+</script>
+<div class="jumbotron text-center" style="margin-bottom:0;color:#FFFFFF;background-color:#000000;">
+<p>Site designed by: EarthBull (LeftBased) - 2021<br /><a href="https://github.com/leftbased" target="_blank">My Github</a>
+<!-- hitwebcounter Code START -->
+<a href="https://www.hitwebcounter.com" target="_blank">
+<div align='center'><a href='https://www.websitecounterfree.com'><img src='https://www.websitecounterfree.com/c.php?d=9&id=16227&s=36' border='0' alt='Free Website Counter'></a><br / ><small><a href='https://www.websitecounterfree.com' title="Free Website Counter">Free Website Counter</a></small></div>
+</p>
+
+</html>
