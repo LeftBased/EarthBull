@@ -1,8 +1,10 @@
 function changeLOG(){
 	var data = '<label>[CHANGELOG]</label>' +
+	'<b>10.02.2021</b><br/>' +
+	"• Fixed YouTube player embed code. More improved!</br>" +
 	'<b>09.29.2021</b><br/>' + 
 	'• Added a MAC Address Generator<br/>' +
-	' Added a daily bible verse<br/>' + 
+	'• Added a daily bible verse<br/>' + 
 	'<b>09.28.2021</b><br/>' + 
 	'• Added a playlist selector<br/>' + 
 	'<b>09.26.2021</b><br/>' +
@@ -163,6 +165,75 @@ function SavePlaylist(){
 	menu(1);
 	$("div.box6").html("Saved playlist: " + myItem);
 };
+var TotalData;
+var Tracks = [];
+var TracksZ;
+
+function GrabRandomTrackZ(PlaylistID){ /* grabs a random track and stores it locally as MyTrack */
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			const myObj = JSON.parse(this.responseText);
+			shuffle(myObj);
+			//const myIndex = Math.floor((Math.random() * myObj.length - 1));
+			//var startTime = myObj[myIndex].startTime;
+			//var endTime = myObj[myIndex].endTime;
+			var trackID;// = myObj[myIndex].videoid;
+			
+			const MaxCount = myObj.length;
+			/* videoID | startTime | endTime */
+			for (let i = 0; i < MaxCount; i++) {
+				//const myIndex = Math.floor((Math.random() * myObj.length - 1));
+				trackID = myObj[i].videoid;
+				const X = trackID;
+				Tracks[i] = X;
+				//console.log(trackID);
+			  }
+
+			  for (let i = 0; i < MaxCount; i++) {
+				//const myIndex = Math.floor((Math.random() * myObj.length - 1));
+				//trackID = myObj[myIndex].videoid;
+				//const X = trackID;
+				if (i == 0) {
+					TracksZ = Tracks[i] + "|"
+				} else if (i == MaxCount) {
+					TracksZ = TracksZ + Tracks[i];
+				} else {
+					TracksZ = TracksZ + Tracks[i] + "|"
+				}
+				
+				//Tracks[i] = X;
+
+				//console.log(TracksZ);
+			  }
+			  var TotalData = TracksZ;
+			localStorage.setItem("MyTrack", TotalData);
+			UpdateVideoPlayerZ();
+		}
+		
+    }
+	switch(PlaylistID) {
+		case '0'||"0"||0:
+			xmlhttp.open("GET", "db/music.json", true);
+			xmlhttp.send();
+			break;
+		case '1'||"1"||1:
+			xmlhttp.open("GET", "db/documentary.json", true);
+			xmlhttp.send();
+			break;
+		case '2'||"2"||2:
+			xmlhttp.open("GET", "db/mfdoom.json", true);
+			xmlhttp.send();
+			break;
+		case '3'||"3"||3:
+			xmlhttp.open("GET", "db/hiphop.json", true);
+			xmlhttp.send();
+			break;
+		}
+		
+};
+
+
 function GrabRandomTrack(PlaylistID){ /* grabs a random track and stores it locally as MyTrack */
 	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.onreadystatechange = function() {
@@ -175,11 +246,12 @@ function GrabRandomTrack(PlaylistID){ /* grabs a random track and stores it loca
 			var endTime = myObj[myIndex].endTime;
 			
 			var TotalData = trackID + "|" + startTime + "|" + endTime;
+			console.log(TotalData);
 			localStorage.setItem("MyTrack", TotalData);
 			UpdateVideoPlayer();
 		}
 		
-    };
+    }
 	switch(PlaylistID) {
 		case '0'||"0"||0:
 			xmlhttp.open("GET", "db/music.json", true);
@@ -247,6 +319,38 @@ function GrabTitle(videoID){
 			$( "#np" ).html(String("[Now Playing]: " + myTitle));
 		}} );
 };
+  function shuffle(sourceArray) {
+    for (var i = 0; i < sourceArray.length - 1; i++) {
+        var j = i + Math.floor(Math.random() * (sourceArray.length - i));
+
+        var temp = sourceArray[j];
+        sourceArray[j] = sourceArray[i];
+        sourceArray[i] = temp;
+    }
+    return sourceArray;
+}
+function YouTubeEmbedZ(vidID){
+
+	let str = vidID;
+    const myData = str.split("|");
+	const myCount = str.split("|").length-1
+	var myEmbedData;
+	for (let i = 0; i < myCount; i++) {
+		if (i == 0) {
+			myEmbedData = myData[i];
+		} else {
+			myEmbedData = myEmbedData + ',' + myData[i];
+		}
+	}
+
+	
+	const starterID = myData[0];
+	const videoID = myEmbedData; // example: gpyRI1j9t6c
+//https://www.youtube.com/embed/M7lc1UVf-VE?autoplay=1&origin=http://example.com"
+SDEmbed = '<label id="np" style="align-items:center;position:relative;">[Now Playing]: ' + myTitle + '</label><iframe id="player" width="100%" height="720" src="https://www.youtube.com/embed/' + starterID + '?playlist=' + videoID + '&autoplay=1&loop=1&rel=0&origin=localhost&wmode=transparent&enablejsapi=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; loop" allowfullscreen></iframe>' + 
+'<br /><button type="button" onclick="CloseVideo();">Close Video</button><button type="button" onclick="menu(1);">Random Video</button><button type="button" onclick="UpdatePlaylist(1);">Random Documentary</button>';
+	return SDEmbed;
+};
 /* videoID | startTime | endTime */
 function YouTubeEmbed(vidID){
 	let str = vidID;
@@ -256,20 +360,20 @@ function YouTubeEmbed(vidID){
 	var endTime = myData[2];
 	var Checker = isNaN(startTime);
 	var Checker2 = isNaN(endTime);
-
+//https://www.youtube.com/embed/M7lc1UVf-VE?autoplay=1&origin=http://example.com"
 	if (Checker) {
 		//$( "#np" ).html(String("[Now Playing]: " + ytvtit)); /*our only way to update*/
-			SDEmbed = '<label id="np" style="align-items:center;position:relative;">[Now Playing]: ' + myTitle + '</label><iframe id="player" width="100%" height="720" src="https://www.youtube.com/embed/' + videoID + '?playlist=' + videoID + '&autoplay=1&loop=1&rel=0&wmode=transparent&enablejsapi=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; loop" allowfullscreen></iframe>' + 
+			SDEmbed = '<label id="np" style="align-items:center;position:relative;">[Now Playing]: ' + myTitle + '</label><iframe id="player" width="100%" height="720" src="https://www.youtube.com/embed/' + videoID + '?playlist=' + videoID + '&autoplay=1&loop=1&rel=0&wmode=transparent&origin=localhost&enablejsapi=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; loop" allowfullscreen></iframe>' + 
 			'<br /><button type="button" onclick="CloseVideo();">Close Video</button><button type="button" onclick="menu(1);">Random Video</button><button type="button" onclick="UpdatePlaylist(1);">Random Documentary</button>';
 			//GrabTitle(videoID);
 }
 if (Checker2) {
-			SDEmbed = '<label id="np" style="align-items:center;position:relative;">[Now Playing]: ' + myTitle + '</label><iframe id="player" width="100%" height="720" src="https://www.youtube.com/embed/' + videoID + '?playlist=' + videoID + '&autoplay=1&loop=1&rel=0&wmode=transparent&enablejsapi=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; loop" allowfullscreen></iframe>' + 
+			SDEmbed = '<label id="np" style="align-items:center;position:relative;">[Now Playing]: ' + myTitle + '</label><iframe id="player" width="100%" height="720" src="https://www.youtube.com/embed/' + videoID + '?playlist=' + videoID + '&autoplay=1&loop=1&rel=0&origin=localhost&wmode=transparent&enablejsapi=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; loop" allowfullscreen></iframe>' + 
 			'<br /><button type="button" onclick="CloseVideo();">Close Video</button><button type="button" onclick="menu(1);">Random Video</button><button type="button" onclick="UpdatePlaylist(1);">Random Documentary</button>';
 			//GrabTitle(videoID);
 		}
 else {
-			SDEmbed = '<label id="np" style="align-items:center;position:relative;">[Now Playing]: ' + myTitle + '</label><iframe id="player" width="100%" height="720" src="https://www.youtube.com/embed/' + videoID + '?playlist=' + videoID + '&start=' + startTime + '&end=' + endTime + '&autoplay=1&loop=1&rel=0&wmode=transparent&enablejsapi=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; loop" allowfullscreen></iframe>' +
+			SDEmbed = '<label id="np" style="align-items:center;position:relative;">[Now Playing]: ' + myTitle + '</label><iframe id="player" width="100%" height="720" src="https://www.youtube.com/embed/' + videoID + '?playlist=' + videoID + '&start=' + startTime + '&end=' + endTime + '&origin=localhost&autoplay=1&loop=1&rel=0&wmode=transparent&enablejsapi=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; loop" allowfullscreen></iframe>' +
 			'<br /><button type="button" onclick="CloseVideo();">Close Video</button><button type="button" onclick="menu(1);">Random Video</button><button type="button" onclick="UpdatePlaylist(1);">Random Documentary</button>';
 			//GrabTitle(videoID);
 		}
@@ -283,7 +387,16 @@ function Yoink(){
 		localStorage.setItem('MyPlaylist', '0');
 		myPlaylistID = 0;
 	}
-	GrabRandomTrack(myPlaylistID);
+	
+	GrabRandomTrackZ(myPlaylistID);
+};
+function UpdateVideoPlayerZ(){
+	const myVid = localStorage.getItem('MyTrack');
+	const str = myVid;
+    const myData = str.split("|");
+	const videoID = myData[0]; // example: gpyRI1j9t6c
+	GrabTitle(videoID);
+	$( "div.box2" ).html(YouTubeEmbedZ(myVid));
 };
 function UpdateVideoPlayer(){
 	const myVid = localStorage.getItem('MyTrack');
@@ -339,32 +452,6 @@ function menu(menuItem){
 	}
 };
 
-const tag = document.createElement('script');
-tag.src = "https://www.youtube.com/iframe_api";
-const firstScriptTag = document.getElementsByTagName('script')[0];
-firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-var player;
-function onYouTubeIframeAPIReady() {
-	document.querySelectorAll( 'player' ).forEach((item) => {
-//new YT.Player(item, {
-	player = new YT.Player(item, { //'ytplayer', {
-		playerVars: {'wmode': transparent, 'volume': 50,'playsinline': 1, 'rel':0 , 'autoplay': 1, 'loop':1, 'controls':1, 'start':0, 'autohide':0,'wmode':'opaque', 'modestbranding':1},
-		events: {
-			'onReady': function (event) {
-			  event.target.setSize(width=1280, height=720);
-			  event.target.setVolume(60);
-			  event.target.playVideo();
-			}
-			,'onStateChange': function (event) {
-				if (event.data == YT.PlayerState.ENDED) {
-					event.target.seekTo(0);
-					event.target.playVideo();
-					player.playVideo();
-				} 
-			}
-	}
-}
-,)})};
 function HDVideo(){
 	$( 'div.box2' ).html(HDEmbed);
 };
@@ -384,6 +471,54 @@ function CloseTHC(){
 
 var psyLoop;
 
+const tag = document.createElement('script');
+tag.src = "https://www.youtube.com/iframe_api";
+const firstScriptTag = document.getElementsByTagName('script')[0];
+
+firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+var player;
+function onYouTubeIframeAPIReady() {
+	//document.querySelectorAll( 'player' ).forEach((item) => {
+//new YT.Player(item, {
+	player = new YT.Player( '#player' , { //'ytplayer', {
+		 // player = new YT.Player('player', {
+        events: {
+          'onReady': onPlayerReady,
+          'onStateChange': onPlayerStateChange
+        }
+    });
+  }
+		//playerVars: {'wmode': transparent, 'volume': 50,'playsinline': 1, 'rel':0 , 'autoplay': 1, 'loop':1, 'controls':1, 'start':0, 'autohide':0,'wmode':'opaque', 'modestbranding':1},
+		/*
+		events: {
+			'onReady': function (event) {
+			  event.target.setSize(width=1280, height=720);
+			  event.target.setVolume(60);
+			  event.target.playVideo();
+			}
+			,'onStateChange': function (event) {
+				if (event.data == YT.PlayerState.ENDED) {
+					event.target.seekTo(0);
+					event.target.playVideo();
+					player.playVideo();
+				} 
+			}
+	}
+}
+,)})};
+*/
+function onPlayerReady(event) {
+	event.target.setVolume(60);
+	event.target.playVideo();
+  };
+function onStateChange(event){
+	if (event.data == YT.PlayerState.ENDED) {
+		event.target.seekTo(0);
+		event.target.playVideo();
+		player.playVideo();
+	}
+};
 function StopPSY(){
 	$( "div.box4" ).html("");
 	clearInterval(psyLoop);
