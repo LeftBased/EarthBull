@@ -1,7 +1,67 @@
+function objToString(object) {
+  var str = '';
+  for (var k in object) {
+    if (object.hasOwnProperty(k)) {
+      str += k + '::' + object[k] + '\n';
+    }
+  }
+};
+const tag = document.createElement('script');
+tag.src = "https://www.youtube.com/iframe_api";
+const firstScriptTag = document.getElementsByTagName('script')[0];
+
+firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+var player;
+function onYouTubeIframeAPIReady() {
+//document.querySelectorAll( 'player' ).forEach((item) => {
+	//new YT.Player(item, {
+	player = new YT.Player( 'player' , { //'ytplayer', {
+		
+		 // player = new YT.Player('player', {
+        events: {
+          'onReady': onPlayerReady,
+          'onStateChange': onPlayerStateChange
+        }
+    });
+  }
+		//playerVars: {'wmode': transparent, 'volume': 50,'playsinline': 1, 'rel':0 , 'autoplay': 1, 'loop':1, 'controls':1, 'start':0, 'autohide':0,'wmode':'opaque', 'modestbranding':1},
+		/*
+		events: {
+			'onReady': function (event) {
+			  event.target.setSize(width=1280, height=720);
+			  event.target.setVolume(60);
+			  event.target.playVideo();
+			}
+			,'onStateChange': function (event) {
+				if (event.data == YT.PlayerState.ENDED) {
+					event.target.seekTo(0);
+					event.target.playVideo();
+					player.playVideo();
+				} 
+			}
+	}
+}
+,)})};
+*/
+function onPlayerReady(event) {
+	
+	event.target.setVolume(60);
+	event.target.playVideo();
+  };
+function onStateChange(event){
+	if (event.data == YT.PlayerState.ENDED) {
+		event.target.seekTo(0);
+		event.target.playVideo();
+		player.playVideo();
+	}
+};
 function changeLOG(){
 	var data = '<label>[CHANGELOG]</label>' +
+	'<b>10.03.2021</b><br/>' +
+	'• Added an 80s playlist.<br/>' + 
 	'<b>10.02.2021</b><br/>' +
-	"• Fixed YouTube player embed code. More improved!</br>" +
+	'• Fixed YouTube player embed code. More improved!</br>' +
 	'<b>09.29.2021</b><br/>' + 
 	'• Added a MAC Address Generator<br/>' +
 	'• Added a daily bible verse<br/>' + 
@@ -62,6 +122,7 @@ function DrawListBox(){
 	'<option>Documentaries</option>' + 
 	'<option>MF Doom</option>' +
 	'<option>Hip-Hop</option>' +
+	'<option>The 80s</option>' +
 	'</select><button id="button" type="button" onclick="SavePlaylist();">Save Playlist</button>';
 $("div.box6").html(ListBox);
 };
@@ -126,7 +187,6 @@ function GenHexX(){
 	$("div.box6").html('<textarea class="log2" style="width: 200px; height: 140px">' + myData + '</textarea><button type="button" onclick="SaveMACS();">Save to File</button><button type="button" onclick="ClearHex();">Clear List</button>');
 };
 function UpdatePlaylist(MyPlaylistID){
-	var myPlaylistID;
 	if (isNaN(myPlaylistID)) {
 		myPlaylistID = 0; /*default playlist*/
 	}
@@ -175,25 +235,15 @@ function GrabRandomTrackZ(PlaylistID){ /* grabs a random track and stores it loc
 		if (this.readyState == 4 && this.status == 200) {
 			const myObj = JSON.parse(this.responseText);
 			shuffle(myObj);
-			//const myIndex = Math.floor((Math.random() * myObj.length - 1));
-			//var startTime = myObj[myIndex].startTime;
-			//var endTime = myObj[myIndex].endTime;
 			var trackID;// = myObj[myIndex].videoid;
-			
 			const MaxCount = myObj.length;
 			/* videoID | startTime | endTime */
 			for (let i = 0; i < MaxCount; i++) {
-				//const myIndex = Math.floor((Math.random() * myObj.length - 1));
 				trackID = myObj[i].videoid;
 				const X = trackID;
 				Tracks[i] = X;
-				//console.log(trackID);
 			  }
-
 			  for (let i = 0; i < MaxCount; i++) {
-				//const myIndex = Math.floor((Math.random() * myObj.length - 1));
-				//trackID = myObj[myIndex].videoid;
-				//const X = trackID;
 				if (i == 0) {
 					TracksZ = Tracks[i] + "|"
 				} else if (i == MaxCount) {
@@ -201,14 +251,10 @@ function GrabRandomTrackZ(PlaylistID){ /* grabs a random track and stores it loc
 				} else {
 					TracksZ = TracksZ + Tracks[i] + "|"
 				}
-				
-				//Tracks[i] = X;
-
-				//console.log(TracksZ);
 			  }
 			  var TotalData = TracksZ;
 			localStorage.setItem("MyTrack", TotalData);
-			UpdateVideoPlayerZ();
+			UpdateVideoPlayerZ(PlaylistID);
 		}
 		
     }
@@ -229,10 +275,12 @@ function GrabRandomTrackZ(PlaylistID){ /* grabs a random track and stores it loc
 			xmlhttp.open("GET", "db/hiphop.json", true);
 			xmlhttp.send();
 			break;
+		case '4'||"4"||4:
+			xmlhttp.open("GET", "db/The_80s.json", true);
+			xmlhttp.send();
+			break;
 		}
-		
 };
-
 
 function GrabRandomTrack(PlaylistID){ /* grabs a random track and stores it locally as MyTrack */
 	var xmlhttp = new XMLHttpRequest();
@@ -342,10 +390,27 @@ function YouTubeEmbedZ(vidID){
 			myEmbedData = myEmbedData + ',' + myData[i];
 		}
 	}
-
-	
 	const starterID = myData[0];
 	const videoID = myEmbedData; // example: gpyRI1j9t6c
+	var output = myPlaylistID; //localStorage.getItem("MyPlaylist");
+	switch(output) {
+		case '0':
+			myTitle = "Default (Playlist)";
+			break;
+		case '1':
+			myTitle = "Documentaries (Playlist)";
+			break;	
+		case '2':
+			myTitle = "MF Doom (Playlist)";
+			break;
+		case '3':
+			myTitle = "Hip-Hop (Playlist)";
+			break;
+		case '4':
+			myTitle = "The 80's (Playlist)";
+			break;
+	};
+
 //https://www.youtube.com/embed/M7lc1UVf-VE?autoplay=1&origin=http://example.com"
 SDEmbed = '<label id="np" style="align-items:center;position:relative;">[Now Playing]: ' + myTitle + '</label><iframe id="player" width="100%" height="720" src="https://www.youtube.com/embed/' + starterID + '?playlist=' + videoID + '&autoplay=1&loop=1&rel=0&origin=localhost&wmode=transparent&enablejsapi=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; loop" allowfullscreen></iframe>' + 
 '<br /><button type="button" onclick="CloseVideo();">Close Video</button><button type="button" onclick="menu(1);">Random Video</button><button type="button" onclick="UpdatePlaylist(1);">Random Documentary</button>';
@@ -363,28 +428,29 @@ function YouTubeEmbed(vidID){
 //https://www.youtube.com/embed/M7lc1UVf-VE?autoplay=1&origin=http://example.com"
 	if (Checker) {
 		//$( "#np" ).html(String("[Now Playing]: " + ytvtit)); /*our only way to update*/
-			SDEmbed = '<label id="np" style="align-items:center;position:relative;">[Now Playing]: ' + myTitle + '</label><iframe id="player" width="100%" height="720" src="https://www.youtube.com/embed/' + videoID + '?playlist=' + videoID + '&autoplay=1&loop=1&rel=0&wmode=transparent&origin=localhost&enablejsapi=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; loop" allowfullscreen></iframe>' + 
+			SDEmbed = '<label id="np" style="align-items:center;position:relative;">[Now Playing]: ' + '</label><iframe id="player" width="100%" height="720" src="https://www.youtube.com/embed/' + videoID + '?playlist=' + videoID + '&autoplay=1&loop=1&rel=0&wmode=transparent&origin=localhost&enablejsapi=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; loop" allowfullscreen></iframe>' + 
 			'<br /><button type="button" onclick="CloseVideo();">Close Video</button><button type="button" onclick="menu(1);">Random Video</button><button type="button" onclick="UpdatePlaylist(1);">Random Documentary</button>';
 			//GrabTitle(videoID);
 }
 if (Checker2) {
-			SDEmbed = '<label id="np" style="align-items:center;position:relative;">[Now Playing]: ' + myTitle + '</label><iframe id="player" width="100%" height="720" src="https://www.youtube.com/embed/' + videoID + '?playlist=' + videoID + '&autoplay=1&loop=1&rel=0&origin=localhost&wmode=transparent&enablejsapi=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; loop" allowfullscreen></iframe>' + 
+			SDEmbed = '<label id="np" style="align-items:center;position:relative;">[Now Playing]: ' + '</label><iframe id="player" width="100%" height="720" src="https://www.youtube.com/embed/' + videoID + '?playlist=' + videoID + '&autoplay=1&loop=1&rel=0&origin=localhost&wmode=transparent&enablejsapi=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; loop" allowfullscreen></iframe>' + 
 			'<br /><button type="button" onclick="CloseVideo();">Close Video</button><button type="button" onclick="menu(1);">Random Video</button><button type="button" onclick="UpdatePlaylist(1);">Random Documentary</button>';
 			//GrabTitle(videoID);
 		}
 else {
-			SDEmbed = '<label id="np" style="align-items:center;position:relative;">[Now Playing]: ' + myTitle + '</label><iframe id="player" width="100%" height="720" src="https://www.youtube.com/embed/' + videoID + '?playlist=' + videoID + '&start=' + startTime + '&end=' + endTime + '&origin=localhost&autoplay=1&loop=1&rel=0&wmode=transparent&enablejsapi=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; loop" allowfullscreen></iframe>' +
+			SDEmbed = '<label id="np" style="align-items:center;position:relative;">[Now Playing]: ' + '</label><iframe id="player" width="100%" height="720" src="https://www.youtube.com/embed/' + videoID + '?playlist=' + videoID + '&start=' + startTime + '&end=' + endTime + '&origin=localhost&autoplay=1&loop=1&rel=0&wmode=transparent&enablejsapi=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; loop" allowfullscreen></iframe>' +
 			'<br /><button type="button" onclick="CloseVideo();">Close Video</button><button type="button" onclick="menu(1);">Random Video</button><button type="button" onclick="UpdatePlaylist(1);">Random Documentary</button>';
 			//GrabTitle(videoID);
 		}
 		
 	return SDEmbed;
 };
+var myPlaylistID;
 function Yoink(){
 	//var vid = songs[Math.floor((random() * songs.length))];
-	var myPlaylistID = localStorage.getItem('MyPlaylist');
+	myPlaylistID = localStorage.getItem('MyPlaylist');
 	if (isNaN(myPlaylistID)) {
-		localStorage.setItem('MyPlaylist', '0');
+		localStorage.setItem('MyPlaylist', 0);
 		myPlaylistID = 0;
 	}
 	
@@ -394,8 +460,7 @@ function UpdateVideoPlayerZ(){
 	const myVid = localStorage.getItem('MyTrack');
 	const str = myVid;
     const myData = str.split("|");
-	const videoID = myData[0]; // example: gpyRI1j9t6c
-	GrabTitle(videoID);
+	//const videoID = myData[0]; // example: gpyRI1j9t6c
 	$( "div.box2" ).html(YouTubeEmbedZ(myVid));
 };
 function UpdateVideoPlayer(){
@@ -403,6 +468,7 @@ function UpdateVideoPlayer(){
 	const str = myVid;
     const myData = str.split("|");
 	const videoID = myData[0]; // example: gpyRI1j9t6c
+	
 	GrabTitle(videoID);
 	$( "div.box2" ).html(YouTubeEmbed(myVid));
 };
@@ -420,7 +486,7 @@ function menu(menuItem){
 			$( "div.box" ).html("Ecosia Idle Search Bot<br />(this will open a popup & search random keywords)<br />it takes 45 searches for them to plant a tree.<br /><br /><button type='button' onclick='javascript:Start();javascript:myLoop();'>Start</button><button type='button' onclick='javascript:StopIt();javascript:CloseMe();'>Stop</button><button type='button' onclick='javascript:StopIt();javascript:CloseMe();javascript:CloseIdleBot();'>Close Bot</button><p id='mycnt'>Counter: 0</p>");
 			break;
 		case 1: //Play a random video
-		var myPlaylistID = localStorage.getItem('MyPlaylist');
+		myPlaylistID = localStorage.getItem('MyPlaylist');
 		if (isNaN(myPlaylistID)) {
 			myPlaylistID = '0';
 			localStorage.setItem('MyPlaylist', myPlaylistID);
@@ -449,6 +515,9 @@ function menu(menuItem){
 		case 8: //mac address generator
 		    DrawMACGen();
 			break;
+		case 9:
+			testEM();
+			break;
 	}
 };
 
@@ -471,54 +540,6 @@ function CloseTHC(){
 
 var psyLoop;
 
-const tag = document.createElement('script');
-tag.src = "https://www.youtube.com/iframe_api";
-const firstScriptTag = document.getElementsByTagName('script')[0];
-
-firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-var player;
-function onYouTubeIframeAPIReady() {
-	//document.querySelectorAll( 'player' ).forEach((item) => {
-//new YT.Player(item, {
-	player = new YT.Player( '#player' , { //'ytplayer', {
-		 // player = new YT.Player('player', {
-        events: {
-          'onReady': onPlayerReady,
-          'onStateChange': onPlayerStateChange
-        }
-    });
-  }
-		//playerVars: {'wmode': transparent, 'volume': 50,'playsinline': 1, 'rel':0 , 'autoplay': 1, 'loop':1, 'controls':1, 'start':0, 'autohide':0,'wmode':'opaque', 'modestbranding':1},
-		/*
-		events: {
-			'onReady': function (event) {
-			  event.target.setSize(width=1280, height=720);
-			  event.target.setVolume(60);
-			  event.target.playVideo();
-			}
-			,'onStateChange': function (event) {
-				if (event.data == YT.PlayerState.ENDED) {
-					event.target.seekTo(0);
-					event.target.playVideo();
-					player.playVideo();
-				} 
-			}
-	}
-}
-,)})};
-*/
-function onPlayerReady(event) {
-	event.target.setVolume(60);
-	event.target.playVideo();
-  };
-function onStateChange(event){
-	if (event.data == YT.PlayerState.ENDED) {
-		event.target.seekTo(0);
-		event.target.playVideo();
-		player.playVideo();
-	}
-};
 function StopPSY(){
 	$( "div.box4" ).html("");
 	clearInterval(psyLoop);
